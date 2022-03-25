@@ -28,13 +28,36 @@ func main() {
 		fmt.Fprintf(w, "<h1>Hey hey, %s!\n</h1>", title)
 	})
 
-	router.HandleFunc("/excel", MyExcel).Methods("POST")
+	router.HandleFunc("/excel", excelPost).Methods("POST")
+	router.HandleFunc("/excel", excelPost).Methods("GET")
 
 
 	http.ListenAndServe(":80", router)
 }
 
-func MyExcel(w http.ResponseWriter, r *http.Request) {
+func excelGet(w http.ResponseWriter, r *http.Request) {
+	var res map[string]string = make(map[string]string)
+	var status = http.StatusOK
+
+	params := r.URL.Query()
+	param, ok := params["title"]
+	if !ok {
+		res["result"] = "fail"
+		res["error"] = "required parameter is not defined"
+		status = http.StatusBadRequest
+	} else {
+		res["result"] = "ok"
+		res["title"] = param[0]
+		status = http.StatusOK
+	}
+
+	response, _ := json.Marshal(res)
+	w.WriteHeader(status)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
+}
+
+func excelPost(w http.ResponseWriter, r *http.Request) {
 	//request handling
 	var req map[string]interface{}
 	body, _ := ioutil.ReadAll(r.Body)
