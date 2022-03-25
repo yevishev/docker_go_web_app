@@ -29,14 +29,14 @@ func main() {
 	})
 
 	router.HandleFunc("/excel", excelPost).Methods("POST")
-	router.HandleFunc("/excel", excelPost).Methods("GET")
+	router.HandleFunc("/excel", excelGet).Methods("GET")
 
 
 	http.ListenAndServe(":80", router)
 }
 
 func excelGet(w http.ResponseWriter, r *http.Request) {
-	var res map[string]string = make(map[string]string)
+	var res = make(map[string]string)
 	var status = http.StatusOK
 
 	params := r.URL.Query()
