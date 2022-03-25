@@ -1,13 +1,12 @@
-FROM golang:1.17-alpine AS build
-RUN apk --no-cache add gcc g++ make git
-WORKDIR /go/src/app
-COPY . .
-RUN go mod tidy
-RUN GOOS=linux go build -ldflags="-s -w" -o ./bin/web-app ./main.go
+FROM golang:1.17-alpine
 
-FROM alpine:3.13
-RUN apk --no-cache add ca-certificates
-WORKDIR /usr/bin
-COPY --from=build /go/src/app/bin /go/bink
-EXPOSE 80
-ENTRYPOINT /go/bin/web-app --port 80
+WORKDIR /usr/src/app
+
+# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY . .
+RUN go build -v -o /usr/local/bin/app ./...
+
+CMD ["app"]
