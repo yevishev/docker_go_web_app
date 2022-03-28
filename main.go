@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/xuri/excelize/v2"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type Header struct {
@@ -96,6 +98,8 @@ func excelPostTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func excelPost(w http.ResponseWriter, r *http.Request) {
+	ts := time.Now()
+
 	body, _ := ioutil.ReadAll(r.Body)
 	j := Json{}
 	err := json.Unmarshal(body, &j)
@@ -103,13 +107,42 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	for _, item := range j.Headers {
-		fmt.Printf("%v\n", item.Coordinate)
-	}
 
-	for _, item := range j.Companies {
-		for _, value := range item {
-			fmt.Printf("%v\n", value.Value)
+	title := j.Title
+
+	f := excelize.NewFile()
+	index := f.NewSheet(title.Name)
+	tp := time.Now()
+	fmt.Println(tp.Sub(ts).String())
+	for _, header := range j.Headers {
+		err := f.SetCellValue(title.Name, header.Coordinate, header.Text)
+		if err != nil {
+			fmt.Println(err, 1)
+			return
 		}
 	}
+
+	for _, company := range j.Companies {
+		for _, data := range company {
+			err := f.SetCellValue(title.Name, data.Coordinate, data.Value)
+			if err != nil {
+				fmt.Println(err, 1)
+				return
+			}
+
+		}
+	}
+
+	f.SetActiveSheet(index)
+
+	var formattedTime = time.Now().Format("2-01-06 15-04")
+	var filename  = "runtime/" + formattedTime + ".xlsx"
+	err = f.SaveAs(filename)
+	if err != nil {
+		fmt.Println(err, 1)
+		return
+	}
+	te := time.Now()
+	fmt.Fprintf(w, "<h1>" + te.Sub(ts).String() + "</h1>")
+
 }

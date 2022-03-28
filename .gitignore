@@ -16,3 +16,6 @@
 
 #goland files
 .idea
+
+#export files
+runtime
