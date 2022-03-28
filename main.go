@@ -21,7 +21,7 @@ func main() {
 		fmt.Fprintf(w, "<h1>Hello from Docker!\n</h1>")
 	})
 
-	router.HandleFunc("/hell1o/{name}", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/hello/{name}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		title := vars["name"]
 
