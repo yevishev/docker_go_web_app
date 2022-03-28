@@ -135,7 +135,7 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 
 	f.SetActiveSheet(index)
 
-	var formattedTime = time.Now().Format("2-01-06 15-04")
+	var formattedTime = time.Now().Format("2.01.06 15:04")
 	var filename  = "runtime/" + formattedTime + ".xlsx"
 	err = f.SaveAs(filename)
 	if err != nil {
