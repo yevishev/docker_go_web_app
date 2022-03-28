@@ -1,4 +1,4 @@
-module docker_go_web_app
+module excel_export
 
 go 1.17
 
