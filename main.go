@@ -10,12 +10,23 @@ import (
 
 type Header struct {
 	Coordinate string `json:"c"`
-	Text string `json:"v"`
+	Text string `json:"n"`
 	Width int `json:"w"`
+}
+
+type Cell struct {
+	Coordinate string `json:"s"`
+	Value string `json:"v"`
+}
+
+type Title struct {
+	Name string `json:"name"`
 }
 
 type Json struct {
 	Headers []Header `json:"h"`
+	Companies   map[string][]Cell `json:"d"`
+	Title   `json:"t"`
 }
 
 func main() {
@@ -94,5 +105,11 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, item := range j.Headers {
 		fmt.Printf("%v\n", item.Coordinate)
+	}
+
+	for _, item := range j.Companies {
+		for _, value := range item {
+			fmt.Printf("%v\n", value.Value)
+		}
 	}
 }
