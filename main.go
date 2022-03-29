@@ -49,7 +49,7 @@ func main() {
 	router.HandleFunc("/excel", excelPost).Methods("POST")
 
 	/* Specifying ports */
-	http.ListenAndServe(":8002", router)
+	http.ListenAndServe(":80", router)
 }
 
 func excelGetTest(w http.ResponseWriter, r *http.Request) {
