@@ -36,65 +36,14 @@ func main() {
 
 	/* Homepage */
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "<h1>This is the homepage. Try /excel and set .json body\n</h1>")
+		fmt.Fprintf(w, "<h1>Pong. Try /excel and set .json body\n</h1>")
 	})
-
-	/* Post request test */
-	router.HandleFunc("/excelp", excelPostTest).Methods("POST")
-
-	/* Get request test */
-	router.HandleFunc("/excelg", excelGetTest).Methods("GET")
 
 	/* Get request test */
 	router.HandleFunc("/excel", excelPost).Methods("POST")
 
 	/* Specifying ports */
-	http.ListenAndServe(":80", router)
-}
-
-func excelGetTest(w http.ResponseWriter, r *http.Request) {
-	var res = make(map[string]string)
-	var status = http.StatusOK
-
-	params := r.URL.Query()
-	param, ok := params["title"]
-	if !ok {
-		res["result"] = "fail"
-		res["error"] = "required parameter is not defined"
-		status = http.StatusBadRequest
-	} else {
-		res["result"] = "ok"
-		res["title"] = param[0]
-		status = http.StatusOK
-	}
-
-	response, _ := json.Marshal(res)
-	w.WriteHeader(status)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(response)
-}
-
-func excelPostTest(w http.ResponseWriter, r *http.Request) {
-	var req map[string]interface{}
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	id := req["id"].(string)
-	title := req["title"].(string)
-
-	//response
-	var res = map[string]string{
-		"id" : id,
-		"title" : title,
-	}
-	fmt.Println("Post id: " ,id)
-
-	response, _ := json.Marshal(res)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(response)
+	http.ListenAndServe(":8001", router)
 }
 
 func excelPost(w http.ResponseWriter, r *http.Request) {
