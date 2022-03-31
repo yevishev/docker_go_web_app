@@ -61,6 +61,7 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 
 	f := excelize.NewFile()
 	index := f.NewSheet(title.Name)
+	/*spent time on body*/
 	tp := time.Now()
 	fmt.Println(tp.Sub(ts).String())
 	for _, header := range j.Headers {
@@ -92,6 +93,7 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	te := time.Now()
+	/*full time on response*/
 	fmt.Fprintf(w, "<h1>" + te.Sub(ts).String() + "</h1>")
 
 }
