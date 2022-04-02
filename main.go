@@ -84,7 +84,9 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f.SetActiveSheet(index)
-
+	/* creating buffer of excel file */
+	buffer, err := f.WriteToBuffer()
+	buffer.WriteTo(w)
 	var formattedTime = time.Now().Format("2.01.06 15:04")
 	var filename  = "runtime/" + formattedTime + ".xlsx"
 	err = f.SaveAs(filename)
@@ -95,5 +97,6 @@ func excelPost(w http.ResponseWriter, r *http.Request) {
 	te := time.Now()
 	/*full time on response*/
 	fmt.Fprintf(w, "<h1>" + te.Sub(ts).String() + "</h1>")
+
 
 }
